@@ -52,6 +52,26 @@ html, body {
 
 .app-main { max-width: 900px; margin: 0 auto; padding: 16px; padding-bottom: 48px; }
 
+/* ---------------- About / SEO content ---------------- */
+.about {
+  max-width: 900px;
+  margin: 0 auto 16px;
+  padding: 20px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.about h2 { font-size: 18px; margin: 0 0 8px; color: var(--color-primary); }
+.about h3 { font-size: 15px; margin: 20px 0 6px; color: var(--color-primary); }
+.about p { margin: 0 0 10px; }
+.about__faq { margin: 0; }
+.about__faq dt { font-weight: 600; margin-top: 12px; }
+.about__faq dd { margin: 2px 0 0; color: var(--color-text-muted); }
+@media (min-width: 940px) { .about { padding: 24px; } }
+
 .app-footer {
   text-align: center;
   font-size: 12px;
