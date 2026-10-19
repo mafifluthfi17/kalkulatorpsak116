@@ -1,7 +1,7 @@
 // Simple offline-first service worker for the PSAK 116 Lease Calculator PWA.
 // Caches the app shell so the calculator still works with a weak/lost connection.
 
-const CACHE_VERSION = "psak116-v2";
+const CACHE_VERSION = "psak116-v3";
 const PRECACHE_URLS = [
   "./",
   "./index.html",
@@ -32,27 +32,31 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+// Network-first: online users always get the latest deploy; the cache is only the offline fallback.
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+  if (url.pathname.endsWith("/robots.txt") || url.pathname.endsWith("/sitemap.xml")) return;
 
-      return fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200 && response.type === "basic") {
-            const clone = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
-          }
-          return response;
-        })
-        .catch(() => {
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        if (response && response.status === 200 && response.type === "basic") {
+          const clone = response.clone();
+          caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() =>
+        caches.match(event.request).then((cached) => {
+          if (cached) return cached;
           if (event.request.mode === "navigate") {
             return caches.match("./index.html");
           }
           return new Response("Offline dan berkas belum tersimpan di cache.", { status: 503 });
-        });
-    })
+        })
+      )
   );
 });

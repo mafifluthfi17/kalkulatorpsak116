@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /vendor/
 
 Sitemap: https://kalkulatorpsak116.netlify.app/sitemap.xml
